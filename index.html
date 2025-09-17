@@ -235,6 +235,62 @@
       }
     }
 
+    <!-- News Section -->
+<div id="news-box">
+  <h2>📰 Latest News</h2>
+  <p id="news-headline">Loading news...</p>
+</div>
+
+<style>
+  #news-box {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 26px;
+    color: white;
+    background: rgba(0,0,0,0.3); /* transparent background */
+    padding: 10px 20px;
+    border-radius: 10px;
+    max-width: 80%;
+    line-height: 1.4em;
+  }
+
+  #news-box h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  #news-headline {
+    margin: 0;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+</style>
+
+<script>
+  async function fetchNews() {
+    try {
+      const response = await fetch("https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/rss.xml");
+      const data = await response.json();
+      if (data.items && data.items.length > 0) {
+        document.getElementById("news-headline").textContent = data.items[0].title;
+      } else {
+        document.getElementById("news-headline").textContent = "No news available";
+      }
+    } catch (e) {
+      console.error("News fetch error:", e);
+      document.getElementById("news-headline").textContent = "Error loading news";
+    }
+  }
+
+  // Refresh every 1 hour
+  setInterval(fetchNews, 3600000);
+  fetchNews();
+</script>
+
     setInterval(fetchParcels, 14400000); // every 4 Hours in miliseconds
     fetchParcels();
   </script>
