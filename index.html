@@ -143,9 +143,12 @@
       const dateParts = now.toLocaleDateString(undefined, { day: '2-digit', month: 'long', year: 'numeric' });
       document.getElementById("datetime").textContent = `${dateParts}\n${dayName}`;
 
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      document.getElementById("time").textContent = `${hours}:${minutes}`;
+     let hours = now.getHours();
+const minutes = now.getMinutes().toString().padStart(2, '0');
+const ampm = hours >= 12 ? 'PM' : 'AM';
+hours = hours % 12;
+hours = hours ? hours : 12; // convert hour '0' to '12'
+document.getElementById("time").textContent = `${hours}:${minutes} ${ampm}`;
       updateGreeting(hours);
     }
     setInterval(updateDateTime, 1000);
