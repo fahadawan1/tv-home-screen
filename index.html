@@ -104,16 +104,18 @@
       list-style-type: disc;
     }
    
-    #spotify-widget {
+   #spotify-widget {
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 1;
-  background: rgba(0,0,0,0.5); /* semi-transparent background */
+  background: rgba(0,0,0,0.0); /* fully transparent container */
   border-radius: 10px;
   padding: 5px;
 }
+
 #spotify-widget iframe {
+  background: rgba(0,0,0,0.0); /* attempt transparency */
   border-radius: 10px;
 }
   </style>
@@ -131,7 +133,7 @@
   </div>
 <div id="spotify-widget">
   <iframe 
-    src="https://open.spotify.com/embed/artist/0mJDQBWytBhOh5JB1DOQ1c?" 
+    src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M" 
     width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media">
   </iframe>
 </div>
