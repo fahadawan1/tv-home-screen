@@ -175,23 +175,23 @@
 
     // Weather
     async function fetchWeather() {
-      const apiKey = "da6e580ad304b4b55f1519d1bdb88e17";
-      const city = "Islamabad,PK";
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Network response not ok");
-        const data = await response.json();
-        const temp = Math.round(data.main.temp) + "&deg;C";
-        const iconCode = data.weather[0].icon;
-        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-        document.getElementById("temperature").innerHTML =
-          `<img src="${iconUrl}" alt="Weather"> ${temp}`;
-      } catch (e) {
-        document.getElementById("temperature").textContent = "N/A";
-        console.error("Weather fetch error:", e);
-      }
-    }
+  const apiKey = "da6e580ad304b4b55f1519d1bdb88e17";
+  const city = "Islamabad,PK";
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Network response not ok");
+    const data = await response.json();
+    const temp = Math.round(data.main.temp) + "°C";
+    const iconCode = data.weather[0].icon;
+    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    document.getElementById("temperature").innerHTML =
+      `<img src="${iconUrl}" alt="Weather"> ${temp}`;
+  } catch (e) {
+    document.getElementById("temperature").textContent = "N/A";
+    console.error("Weather fetch error:", e);
+  }
+}
     setInterval(fetchWeather, 3600000); // every 1 hour
     fetchWeather();
 
