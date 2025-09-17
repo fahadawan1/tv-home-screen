@@ -103,6 +103,18 @@
       padding-left: 20px;
       list-style-type: disc;
     }
+    #spotify-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1;
+  background: rgba(0,0,0,0.5); /* semi-transparent background */
+  border-radius: 10px;
+  padding: 5px;
+}
+#spotify-widget iframe {
+  border-radius: 10px;
+}
   </style>
 </head>
 <body>
@@ -116,6 +128,12 @@
     <h2>📦 My Deliveries</h2>
     <ul id="deliveries-list"><li>Loading parcels...</li></ul>
   </div>
+<div id="spotify-widget">
+  <iframe 
+    src="https://open.spotify.com/embed/playlist/YOUR_PLAYLIST_ID" 
+    width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media">
+  </iframe>
+</div>
 
   <script>
     // Background images
