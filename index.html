@@ -199,27 +199,34 @@
     // Clock and Date
     function updateDateTime() {
   const now = new Date();
-  let hours24 = now.getHours(); // 0 - 23, used for greeting
+
+  // --- Date and Day ---
+  const dayName = now.toLocaleDateString(undefined, { weekday: 'long' });
+  const dateStr = now.toLocaleDateString(undefined, { day: '2-digit', month: 'long', year: 'numeric' });
+  document.getElementById("datetime").innerHTML = `${dateStr}<br>${dayName}`;
+
+  // --- Time in 12-hour format ---
+  const hours24 = now.getHours(); // 24-hour for greeting
+  const hours12 = hours24 % 12 || 12; // 12-hour format
   const minutes = now.getMinutes().toString().padStart(2, '0');
-
-  // Convert to 12-hour format for display
-  let hours12 = hours24 % 12 || 12; // converts 0 → 12
-  let ampm = hours24 >= 12 ? "PM" : "AM";
-
+  const ampm = hours24 >= 12 ? "PM" : "AM";
   document.getElementById("time").textContent = `${hours12}:${minutes} ${ampm}`;
-  updateGreeting(hours24); // pass 24-hour hour for greeting
-}
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
 
-    // Greeting
-    function updateGreeting(hour) {
-      let greeting = "Hello";
-      if (hour >= 5 && hour < 12) greeting = "Good Morning";
-      else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
-      else if (hour >= 17 && hour < 21) greeting = "Good Evening";
-      else greeting = "Good Night";
-      document.getElementById("greeting").textContent = greeting;
+  // --- Greeting ---
+  updateGreeting(hours24);
+}
+
+function updateGreeting(hour) {
+  let greeting = "Hello";
+  if (hour >= 5 && hour < 12) greeting = "Good Morning";
+  else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
+  else if (hour >= 17 && hour < 21) greeting = "Good Evening";
+  else greeting = "Good Night";
+  document.getElementById("greeting").textContent = greeting;
+}
+
+setInterval(updateDateTime, 1000);
+updateDateTime();
     }
 
     // Weather
