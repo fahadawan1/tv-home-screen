@@ -144,11 +144,11 @@
       document.getElementById("datetime").textContent = `${dateParts}\n${dayName}`;
 
      let hours = now.getHours();
-const minutes = now.getMinutes().toString().padStart(2, '0');
-const ampm = hours >= 12 ? 'PM' : 'AM';
-hours = hours % 12;
-hours = hours ? hours : 12; // convert hour '0' to '12'
-document.getElementById("time").textContent = `${hours}:${minutes} ${ampm}`;
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // convert hour '0' to '12'
+      document.getElementById("time").textContent = `${hours}:${minutes} ${ampm}`;
       updateGreeting(hours);
     }
     setInterval(updateDateTime, 1000);
