@@ -65,6 +65,33 @@
       font-family: 'Courier New', monospace;
       z-index: 1;
     }
+#parcel-status {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 28px; /* increased from 14px */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.7); /* a bit stronger shadow for readability */
+}
+
+{
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  font-size: 20px;
+  background: transparent;
+  padding: 10px;
+  border-radius: 8px;
+
+  opacity: 0;                /* start invisible */
+  transition: opacity 1.5s;  /* smooth fade */
+}
+.parcel-box.visible {
+  opacity: 1;
+}
+
   </style>
 </head>
 <body>
@@ -73,8 +100,13 @@
   <div id="greeting"></div>
   <div id="temperature">N/A</div>
   <div id="time"></div>
+<div id="parcel-status">
+  <h2>📦 My Deliveries</h2>
+  <ul id="deliveries-list"><li>Loading parcels...</li></ul>
+</div>
 
   <script>
+
     // Background images
     const backgrounds = [
       "https://picsum.photos/id/1018/1920/1080",
@@ -92,18 +124,29 @@
     changeBackground();
 
     // Clock and Date
-    function updateDateTime() {
-      const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const dateString = now.toLocaleDateString(undefined, options);
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      document.getElementById("datetime").textContent = dateString;
-      document.getElementById("time").textContent = `${hours}:${minutes}`;
-      updateGreeting(hours);
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
+function updateDateTime() {
+  const now = new Date();
+
+  // Example: 17 September 2025
+  const dateString = now.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+
+  // Example: Wednesday
+  const dayName = now.toLocaleDateString("en-GB", { weekday: "long" });
+
+  document.getElementById("datetime").innerHTML = `${dateString}<br>${dayName}`;
+
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  document.getElementById("time").textContent = `${hours}:${minutes}`;
+
+  updateGreeting(hours);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
 
     // Greeting
     function updateGreeting(hour) {
@@ -136,6 +179,55 @@
     }
     setInterval(fetchWeather, 3600000); // 3,600,000 ms = 1 hour
     fetchWeather();
+//Parcel
+
+async function fetchParcels() {
+  const apiKey = "_jDz7B6g2ChISjvpvkEPNDT28dh2CnAey4RUf9wOKN7FREfjgDUH3gJwyc4Ata64tIdwGEMXxjD"; // your Parcel API key
+  const url = "https://api.parcel.app/external/deliveries/?filter_mode=active";
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "api-key": apiKey
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response not ok");
+    }
+
+    const data = await response.json();
+    const list = document.getElementById("deliveries-list");
+
+    list.innerHTML = ""; // clear old content
+
+    if (data.success && data.deliveries.length > 0) {
+      data.deliveries.forEach(delivery => {
+        const li = document.createElement("li");
+
+        // Try to show most useful info
+        const status = delivery.events?.length > 0
+          ? delivery.events[0].event
+          : "Status unknown";
+
+        const carrier = delivery.carrier_code?.toUpperCase() || "Unknown Carrier";
+        const tracking = delivery.tracking_number || "No tracking";
+
+        li.textContent = `${carrier} ${tracking}: ${status}`;
+        list.appendChild(li);
+      });
+    } else {
+      list.innerHTML = "<li>No active deliveries</li>";
+    }
+  } catch (e) {
+    console.error("Parcel fetch error:", e);
+    document.getElementById("deliveries-list").innerHTML = "<li>Error loading parcels</li>";
+  }
+}
+
+// Refresh every 15 minutes (API limit is 20 requests/hour, so safe)
+setInterval(fetchParcels, 900000);
+fetchParcels();
   </script>
 </body>
 </html>
