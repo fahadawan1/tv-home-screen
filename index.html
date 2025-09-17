@@ -130,6 +130,16 @@
   white-space: normal;
   word-wrap: break-word;
 }
+    #city-name {
+  position: absolute;
+  bottom: 20px;
+  right: 40px;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  opacity: 0.8;
+  z-index: 1;
+}
   </style>
 </head>
 <body>
@@ -147,6 +157,7 @@
   <h2>📰 Latest News</h2>
   <p id="news-headline">Loading news...</p>
 </div>
+  <div id="city-name"></div>
 
   <script>
     // Background images
@@ -208,13 +219,22 @@
     const response = await fetch(url);
     if (!response.ok) throw new Error("Network response not ok");
     const data = await response.json();
+
     const temp = Math.round(data.main.temp) + "°C";
     const iconCode = data.weather[0].icon;
     const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    const cityName = data.name;
+
+    // top right: temp + icon
     document.getElementById("temperature").innerHTML =
       `<img src="${iconUrl}" alt="Weather"> ${temp}`;
+
+    // bottom right: city name
+    document.getElementById("city-name").textContent = cityName;
+
   } catch (e) {
     document.getElementById("temperature").textContent = "N/A";
+    document.getElementById("city-name").textContent = "";
     console.error("Weather fetch error:", e);
   }
 }
