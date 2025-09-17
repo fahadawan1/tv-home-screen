@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TV Home Screen</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      width: 100vw;
+      font-family: Arial, sans-serif;
+      color: white;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 2s ease-in-out;
+      overflow: hidden;
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 0;
+    }
+    #datetime {
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      font-size: 28px;
+      z-index: 1;
+    }
+    #greeting {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 40px;
+      font-weight: bold;
+      z-index: 1;
+    }
+    #temperature {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      z-index: 1;
+    }
+    #temperature img {
+      width: 50px;
+      height: 50px;
+      margin-right: 8px;
+    }
+    #time {
+      position: absolute;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 100px;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div id="datetime"></div>
+  <div id="greeting"></div>
+  <div id="temperature">N/A</div>
+  <div id="time"></div>
+
+  <script>
+    // Background images
+    const backgrounds = [
+      "https://picsum.photos/id/1018/1920/1080",
+      "https://picsum.photos/id/1015/1920/1080",
+      "https://picsum.photos/id/1025/1920/1080",
+      "https://picsum.photos/id/1043/1920/1080",
+      "https://picsum.photos/id/1056/1920/1080"
+    ];
+    let bgIndex = 0;
+    function changeBackground() {
+      document.body.style.backgroundImage = `url('${backgrounds[bgIndex]}')`;
+      bgIndex = (bgIndex + 1) % backgrounds.length;
+    }
+    setInterval(changeBackground, 300000);
+    changeBackground();
+
+    // Clock and Date
+    function updateDateTime() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateString = now.toLocaleDateString(undefined, options);
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById("datetime").textContent = dateString;
+      document.getElementById("time").textContent = `${hours}:${minutes}`;
+      updateGreeting(hours);
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // Greeting
+    function updateGreeting(hour) {
+      let greeting = "Hello";
+      if (hour >= 5 && hour < 12) greeting = "Good Morning";
+      else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
+      else if (hour >= 17 && hour < 21) greeting = "Good Evening";
+      else greeting = "Good Night";
+      document.getElementById("greeting").textContent = greeting;
+    }
+
+    // Weather
+    async function fetchWeather() {
+      const apiKey = "da6e580ad304b4b55f1519d1bdb88e17";
+      const city = "Islamabad,PK";
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Network response not ok");
+        const data = await response.json();
+        const temp = Math.round(data.main.temp) + "&deg;C";
+        const iconCode = data.weather[0].icon;
+        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+        document.getElementById("temperature").innerHTML =
+          `<img src="${iconUrl}" alt="Weather"> ${temp}`;
+      } catch (e) {
+        document.getElementById("temperature").textContent = "N/A";
+        console.error("Weather fetch error:", e);
+      }
+    }
+    setInterval(fetchWeather, 3600000); // 3,600,000 ms = 1 hour
+    fetchWeather();
+  </script>
+</body>
+</html>
