@@ -301,7 +301,7 @@
     const data = await response.json();
 
     const newsList = document.getElementById("news-list");
-    newsList.innerHTML = data.items.slice(0,5)
+    newsList.innerHTML = data.items.slice(0,2) // only top two headline
       .map(item => `<li>${item.title}</li>`)
       .join('');
   } catch (e) {
