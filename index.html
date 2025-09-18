@@ -128,6 +128,12 @@
   margin: 0;
   white-space: normal;
   word-wrap: break-word;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+#news-headline.visible {
+  opacity: 1;
 }
     #city-name {
   position: absolute;
@@ -283,19 +289,26 @@
     setInterval(fetchParcels, 14400000); // every 4 Hours in miliseconds
     fetchParcels();
 
-    // BBC News Headlines
+    // BBC News Headlines with fade-in
 async function fetchNews() {
+  const headlineEl = document.getElementById("news-headline");
   try {
     const response = await fetch("https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/rss.xml");
     const data = await response.json();
     if (data.items && data.items.length > 0) {
-      document.getElementById("news-headline").textContent = data.items[0].title;
+      // fade out
+      headlineEl.classList.remove("visible");
+      setTimeout(() => {
+        headlineEl.textContent = data.items[0].title;
+        // fade in
+        headlineEl.classList.add("visible");
+      }, 500);
     } else {
-      document.getElementById("news-headline").textContent = "No news available";
+      headlineEl.textContent = "No news available";
     }
   } catch (e) {
     console.error("News fetch error:", e);
-    document.getElementById("news-headline").textContent = "Error loading news";
+    headlineEl.textContent = "Error loading news";
   }
 }
 
