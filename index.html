@@ -146,23 +146,37 @@
 
     // Clock and Date
     function updateDateTime() {
-      const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const dateString = now.toLocaleDateString(undefined, options);
-      const dayName = now.toLocaleDateString(undefined, { weekday: 'long' });
-      const dateParts = now.toLocaleDateString(undefined, { day: '2-digit', month: 'long', year: 'numeric' });
-      document.getElementById("datetime").textContent = `${dateParts}\n${dayName}`;
+  const now = new Date();
 
-     let hours = now.getHours();
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12; // convert hour '0' to '12'
-      document.getElementById("time").textContent = `${hours}:${minutes} ${ampm}`;
-      updateGreeting(hours);
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
+  // --- Date ---
+  const dayName = now.toLocaleDateString(undefined, { weekday: 'long' });
+  const dateParts = now.toLocaleDateString(undefined, { day: '2-digit', month: 'long', year: 'numeric' });
+  document.getElementById("datetime").textContent = `${dateParts}\n${dayName}`;
+
+  // --- Keep 24h time for backend logic ---
+  const hours24 = now.getHours(); // 0–23
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+
+  // --- Convert to 12h for display ---
+  const hours12 = hours24 % 12 || 12;
+  const ampm = hours24 >= 12 ? "PM" : "AM";
+  document.getElementById("time").textContent = `${hours12}:${minutes} ${ampm}`;
+
+  // --- Use 24h time for greeting ---
+  updateGreeting(hours24);
+}
+
+function updateGreeting(hour24) {
+  let greeting = "Hello";
+  if (hour24 >= 5 && hour24 < 12) greeting = "Good Morning";
+  else if (hour24 >= 12 && hour24 < 17) greeting = "Good Afternoon";
+  else if (hour24 >= 17 && hour24 < 21) greeting = "Good Evening";
+  else greeting = "Good Night";
+  document.getElementById("greeting").textContent = greeting;
+}
+
+setInterval(updateDateTime, 1000);
+updateDateTime();
 
     // Greeting
     function updateGreeting(hour) {
