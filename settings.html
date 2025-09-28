@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TV Settings</title>
+</head>
+<body>
+  <h2>Set TV Screen Name & Message</h2>
+
+  <label>Name: <input type="text" id="name"></label><br><br>
+  <label>Message: <input type="text" id="message"></label><br><br>
+  <button onclick="saveSettings()">Save</button>
+
+  <script>
+    function saveSettings() {
+      localStorage.setItem("tvName", document.getElementById("name").value);
+      localStorage.setItem("tvMessage", document.getElementById("message").value);
+      alert("Saved! Open your TV page to see the changes.");
+    }
+
+    // preload if already set
+    window.onload = () => {
+      document.getElementById("name").value = localStorage.getItem("tvName") || "";
+      document.getElementById("message").value = localStorage.getItem("tvMessage") || "";
+    };
+  </script>
+</body>
+</html>
