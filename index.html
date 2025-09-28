@@ -153,16 +153,18 @@
     return "Good evening";
   }
 
-  function updateScreen() {
-    const name = localStorage.getItem("tvName") || "";
-    const message = localStorage.getItem("tvMessage") || "";
+  function updateGreeting() {
+      const name = localStorage.getItem("tvName") || "";
+      const greeting = getGreeting();
+      document.getElementById("greeting").innerText =
+        name ? `${greeting}, ${name}` : greeting;
+    }
 
-    const greeting = getGreeting();
-    document.getElementById("greeting").innerText =
-      name ? `${greeting}, ${name}` : greeting;
-
-    document.getElementById("staticMessage").innerText = message;
-  }
+    // Static Message
+    function updateMessage() {
+      const message = localStorage.getItem("tvMessage") || "";
+      document.getElementById("staticMessage").innerText = message;
+    }
 
   updateScreen();
     
