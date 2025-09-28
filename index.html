@@ -144,6 +144,28 @@
     setInterval(changeBackground, 60000);
     changeBackground();
 
+    //Greatings Message
+      function getGreeting() {
+    const now = new Date();
+    const hour = now.getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  }
+
+  function updateScreen() {
+    const name = localStorage.getItem("tvName") || "";
+    const message = localStorage.getItem("tvMessage") || "";
+
+    const greeting = getGreeting();
+    document.getElementById("greeting").innerText =
+      name ? `${greeting}, ${name}` : greeting;
+
+    document.getElementById("staticMessage").innerText = message;
+  }
+
+  updateScreen();
+    
     // Clock and Date
     function updateDateTime() {
   const now = new Date();
